@@ -5,6 +5,7 @@ from source  import *
 from trajectoire import *
 from math import sqrt
 import time
+import os
 
 class SoundGestion():
 
@@ -28,7 +29,7 @@ class SoundGestion():
 
         self.mm = Mixer(outs=12, chnls=1, time=.025)
 
-        self.folder_path = "/Users/c.thome.SIEGE/Desktop/pyo/"
+        self.folder_path = os.path.realpath(os.path.dirname(__file__))
         
         self.mm.out()
 
