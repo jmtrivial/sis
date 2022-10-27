@@ -6,10 +6,6 @@ from dialog import *
 from exercice import *
 from soundGestion import *
 from server import *
-import sys
-sys.path.insert(0,'..')
-from webdav_audio_library.audio_library import AudioLibrary
-import json
 
 class Ui_MainWindow(object):
 
@@ -162,10 +158,7 @@ class Ui_MainWindow(object):
         self.thread = Server(self.widget, self.mixer, self)
 
         #MAJ bibliothèque sonore
-        if os.path.isdir("library") == False :
-            self.updateBiblio()
-        elif os.path.getmtime("library") < time.time() - 3600 *24 *7 :
-            self.updateBiblio()
+        self.updateBiblio()
 
 
     def clicked(self):
@@ -180,7 +173,7 @@ class Ui_MainWindow(object):
         deleteFrom.takeItem(deleteFrom.row(item))
 
     def ajouter(self):
-        filenames, filter = QtWidgets.QFileDialog.getOpenFileNames(parent=self.MainWindow, caption='Sélectionner les sons', directory='./library', filter='*.wav')
+        filenames, filter = QtWidgets.QFileDialog.getOpenFileNames(parent=self.MainWindow, caption='Sélectionner les sons', directory='./bibliotheque', filter='*.wav')
         for filename in filenames :
             if filename: 
                 file = os.path.splitext(os.path.basename(filename))[0]
@@ -275,11 +268,26 @@ class Ui_MainWindow(object):
         QMessageBox.about(self.widget, "Aide", "Pour ajouter des sons ambiants, cliquer sur le bouton \"+\" correspondant. Pour supprimer un son de la liste, double cliquer dessus. Pour sélectionner un type d'exercice, cliquer dessus.")
 
     def updateBiblio(self):
-        f = open ('config.json', "r")
-        options = json.loads(f.read())
 
-        al = AudioLibrary(options)
-        al.get_audio_files_recursive("library")
+        # on va convertir tous les fichiers mp3 vers wav (et supprimer les mp3)
+        bibliotheque = "bibliotheque"
+        print("Mise à jour de la bibliothèque")
+        self.conversion_wav(bibliotheque)
+
+    def conversion_wav(self, path):
+        files = os.listdir(path)
+        for name in files:
+            np = path + "\\" + name
+            if os.path.isdir(np):
+                print("Parcours du répertoire", np)
+                self.conversion_wav(np)
+            else:
+                if np.lower().endswith("mp3"):
+                    wav = np.split('.')[0] + ".wav"
+                    if not os.path.isfile(wav) or os.path.getmtime(wav) < os.path.getmtime(np):
+                        print("Conversion du fichier", np)
+                        sound = AudioSegment.from_mp3(np)
+                        sound.export(wav, format="wav")
 
 if __name__ == "__main__":
     def OnExitApp():
