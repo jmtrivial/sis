@@ -180,7 +180,7 @@ class SoundGestion():
         
     def setTrajectoire(self, numero, delay):
         self.sourcesMobiles.append(Source(self.mm, self.trajectoires[numero - 1], time.time() + (delay/100), -self.distanceEnceintesFictives, 1+(random.randint(-50, 50))/100))
-        self.sourcesMobiles[-1].setPlayer(self.folder_path+"data/30km_h.wav")
+        self.sourcesMobiles[-1].setPlayer(self.folder_path + "/data/30km_h.wav")
         self.mm.addInput(self.sourcesMobiles[-1], self.sourcesMobiles[-1].getPlayer())
         self.sourcesActives[numero-1] += 1
 
@@ -223,7 +223,7 @@ class SoundGestion():
                     if child.attrib.get('titre') == "clear" :
                         self.son = child.attrib.get('titre')
                     elif child.attrib.get('titre') in {"1", "2", "3", "4", "5", "6", "7", "8"} :
-                        self.son = self.folder_path + "data/" + child.attrib.get('titre') + ".wav"
+                        self.son = self.folder_path + "/data/" + child.attrib.get('titre') + ".wav"
                     else :
                         self.son = self.sounds2[self.sounds1.index(child.attrib.get('titre'))][0]+child.attrib.get('titre')+self.sounds2[self.sounds1.index(child.attrib.get('titre'))][1]
                     self.setSon()
