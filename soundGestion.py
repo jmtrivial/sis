@@ -21,15 +21,17 @@ class SoundGestion():
         self.sourcesActives = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         
         self.s = Server(nchnls=12)
-        self.s.setInputDevice(10)
-        self.s.setOutputDevice(10)
+        self.s.setInputDevice(8) # changer ici pour la bonne version suivant la config de démarrage
+        self.s.setOutputDevice(8) # 
         self.s.boot()
         self.s.deactivateMidi()
         self.s.start()
 
         self.mm = Mixer(outs=12, chnls=1, time=.025)
 
-        self.folder_path = os.path.realpath(os.path.dirname(__file__))
+        #self.folder_path = os.path.realpath(os.path.dirname(__file__))
+        self.folder_path = "\\\\CRDV-DS418\\Biblio_sonore\\SIS\\" 
+        print(self.folder_path)
         
         self.mm.out()
 

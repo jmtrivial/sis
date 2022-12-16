@@ -6,6 +6,9 @@ from dialog import *
 from exercice import *
 from soundGestion import *
 from server import *
+import sys
+from pydub import AudioSegment
+
 
 class Ui_MainWindow(object):
 
@@ -157,7 +160,13 @@ class Ui_MainWindow(object):
 
         self.thread = Server(self.widget, self.mixer, self)
 
-        #MAJ bibliothèque sonore
+        # auparavant, bibliothèque sonore distante
+        # if os.path.isdir("library") == False :
+        #    self.updateBiblio()
+        # elif os.path.getmtime("library") < time.time() - 3600 *24 *7 :
+        #    self.updateBiblio()
+
+        # maintenant, bibliothèque locale
         self.updateBiblio()
 
 
