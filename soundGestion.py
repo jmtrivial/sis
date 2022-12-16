@@ -31,12 +31,15 @@ class SoundGestion():
 
         #self.folder_path = os.path.realpath(os.path.dirname(__file__))
         self.folder_path = "\\\\CRDV-DS418\\Biblio_sonore\\SIS\\" 
-        print(self.folder_path)
         
         self.mm.out()
 
         self.volumeTotal = [0, 0, 0, 0, 0, 0, 0, 0]
         self.nombreSourcesActives = 0
+
+    def clear(self):
+        self.mm.clear()
+
 
     def start(self, sounds1, sounds2):
         self.sounds1 = sounds1
@@ -166,6 +169,7 @@ class SoundGestion():
                         self.source.getPlayer().play()
                     else:
                         self.source.getPlayer().stop()
+                    self.mm.delInput(self.enceinte)
                     self.mm.addInput(self.enceinte, self.source.getPlayer())
                     if self.type == "solo" :
                         self.mm.setAmp(self.enceinte, self.enceinte, self.source.getVolume())
@@ -333,7 +337,10 @@ class SoundGestion():
     def testerEnceintes(self):
         try :
             for i in range(1, 9):
+                self.mm.clear()
                 self.message = "<communication_appli><type style=\"solo\" /><enceinte numero=\"" + str(i) + "\" /><son titre=\""+ str(i) +"\" /></communication_appli>"
+                self.gestionMessage()
+                self.message = "<communication_appli><type style=\"solo\" /><enceinte numero=\"" + str(i) + "\" /><volume value=\"100\" /></communication_appli>"
                 self.gestionMessage()
                 self.message = "<communication_appli><type style=\"solo\" /><enceinte numero=\"" + str(i) + "\" /><state value=\"on\" /></communication_appli>"
                 self.gestionMessage()

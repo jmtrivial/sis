@@ -175,6 +175,7 @@ class Ui_MainWindow(object):
             button.setStyleSheet("border: 5px solid white;")
         btn = self.MainWindow.sender()
         btn.setStyleSheet("border: 5px solid red;")
+        self.mixer.clear()
         self.selection = btn
 
     def handleDoubleClick(self, item):
@@ -297,6 +298,7 @@ class Ui_MainWindow(object):
                         print("Conversion du fichier", np)
                         sound = AudioSegment.from_mp3(np)
                         sound.export(wav, format="wav")
+                
 
 if __name__ == "__main__":
     def OnExitApp():
