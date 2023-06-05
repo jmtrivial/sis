@@ -216,7 +216,7 @@ class SoundManager():
         self.message = data
 
     # Informations reçues depuis la tablette. 
-    # Forme du message:
+    # Forme du message (attention, importance de l'ordre des balises filles):
     # <communication_appli><type style="P1"/><enceinte numero="P2"/><P3 value="P4" /></communication_appli>
     # Avec valeurs possibles:
     # - P1: 
