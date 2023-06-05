@@ -240,6 +240,13 @@ class SoundManager():
     #    - "stop": réduit le volume à zéro (fonctionnement pas intuitif, car l'interface suggère un stop, mais c'est un mute...).
     #
     # Remarque: on peut regarder la fonction testerEnceintes() qui utilise 3 messages pour diffuser chacun des sons "1", "2", "3"...
+    # 
+    # Remarque: P3 = "demande" n'est pas fonctionnel, la tablette n'envoyant jamais ce message.
+    #   Cependant, si python émettait un "demande" (quand un son s'arrête par exemple), cela permettrait d'envoyer
+    #   à l'application android des informations pour mettre à jour l'affichage :
+    #     - nombre de véhicule mobile par trajectoire avec "sourcesActives"
+    #     - nombre de sources actives avec "nombreSourcesActives"
+    #     - volume de chacune des enceinte avec "volumeTotal" (à vérifier cependant, calcul éparpillé)
     def gestionMessage(self):
         try :
             root = ET.fromstring(self.message)
