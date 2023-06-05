@@ -183,7 +183,7 @@ class Ui_MainWindow(object):
         deleteFrom.takeItem(deleteFrom.row(item))
 
     def ajouter(self):
-        filenames, filter = QtWidgets.QFileDialog.getOpenFileNames(parent=self.MainWindow, caption='Sélectionner les sons', directory='./bibliotheque', filter='*.wav')
+        filenames, filter = QtWidgets.QFileDialog.getOpenFileNames(parent=self.MainWindow, caption='Sélectionner les sons', directory=config["library_dir"], filter='*.wav')
         for filename in filenames :
             if filename: 
                 file = os.path.splitext(os.path.basename(filename))[0]
@@ -280,9 +280,8 @@ class Ui_MainWindow(object):
     def updateBiblio(self):
 
         # on va convertir tous les fichiers mp3 vers wav (et supprimer les mp3)
-        bibliotheque = "bibliotheque"
         print("Mise à jour de la bibliothèque")
-        self.conversion_wav(bibliotheque)
+        self.conversion_wav(config["library_dir"])
 
     def conversion_wav(self, path):
         files = os.listdir(path)
