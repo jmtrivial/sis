@@ -10,9 +10,26 @@ import sys
 from pydub import AudioSegment
 
 
-class Ui_MainWindow(object):
+class Ui_MainWindow(QtWidgets.QMainWindow):
 
-    def setupUi(self, MainWindow):
+    def __init__(self):
+        super(QtWidgets.QMainWindow, self).__init__()
+
+        self.setupUi()
+        self.initialize()
+
+    def initialize(self):
+        #démarrage pyo
+        self.mixer = SoundGestion(self)
+
+        # démarrage du serveur
+        self.thread = Server(self.widget, self.mixer, self)
+
+        # initialisation de la bibliothèque
+        self.updateBiblio()
+
+
+    def setupUi(self):
 
         self.selection = 0
         self.selectionne = 0
@@ -20,10 +37,9 @@ class Ui_MainWindow(object):
         self.sounds1 = []
         self.sounds2 = []
 
-        self.MainWindow = MainWindow
-        self.MainWindow.setGeometry(40, 40, 800, 600)
-        self.MainWindow.setWindowTitle("Salle d'immersion sonore")
-        self.MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);color: rgb(0, 0, 0)")
+        self.setGeometry(40, 40, 800, 600)
+        self.setWindowTitle("Salle d'immersion sonore")
+        self.setStyleSheet("background-color: rgb(255, 255, 255);color: rgb(0, 0, 0)")
 
         #PARTIE GAUCHE
         #titres
@@ -67,12 +83,12 @@ class Ui_MainWindow(object):
         self.addAmbiant = QtWidgets.QPushButton()
         self.addAmbiant.setStyleSheet("background-color: rgb(199, 227, 255); margin: 0 5px; padding: 5px 0;")
         self.addAmbiant.setIcon(icon)
-        self.addAmbiant.clicked.connect(self.ajouter)
+        self.addAmbiant.clicked.connect(self.addFile)
 
         self.addPonctuel = QtWidgets.QPushButton()
         self.addPonctuel.setStyleSheet("background-color: rgb(255, 237, 199); margin: 0 5px; padding: 5px 0;")
         self.addPonctuel.setIcon(icon)
-        self.addPonctuel.clicked.connect(self.ajouter)
+        self.addPonctuel.clicked.connect(self.addFile)
 
         #layout
         self.layoutGauche = QVBoxLayout()
@@ -139,59 +155,46 @@ class Ui_MainWindow(object):
         self.layout.addLayout(self.gridLayout)
 
         self.widget.setLayout(self.layout)
-        self.MainWindow.setCentralWidget(self.widget)
+        self.setCentralWidget(self.widget)
 
         #MENU
-        self.menuBar = self.MainWindow.menuBar()
+        self.menuBar = self.menuBar()
         self.menuHelp = self.menuBar.addMenu("Aide")
-        self.action = QAction(QIcon('help.png'), "Aide", self.MainWindow)
+        self.action = QAction(QIcon('help.png'), "Aide", self)
         self.menuHelp.addAction(self.action)
         self.action.triggered.connect(self.help)
 
         self.menuBiblio = self.menuBar.addMenu("Bibliothèque")
-        self.action3 = QAction(QIcon('test.png'), "Mise à jour", self.MainWindow)
+        self.action3 = QAction(QIcon('test.png'), "Mise à jour", self)
         self.menuBiblio.addAction(self.action3)
         self.action3.triggered.connect(self.updateBiblio)
 
-        QtCore.QMetaObject.connectSlotsByName(self.MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(self)
 
-        #démarrage pyo
-        self.mixer = SoundGestion(self)
-
-        self.thread = Server(self.widget, self.mixer, self)
-
-        # auparavant, bibliothèque sonore distante
-        # if os.path.isdir("library") == False :
-        #    self.updateBiblio()
-        # elif os.path.getmtime("library") < time.time() - 3600 *24 *7 :
-        #    self.updateBiblio()
-
-        # maintenant, bibliothèque locale
-        self.updateBiblio()
 
 
     def clicked(self):
         for button in [self.fidev.getWidget(), self.marcheParallele.getWidget(), self.carrefour.getWidget(), self.test] :
             button.setStyleSheet("border: 5px solid white;")
-        btn = self.MainWindow.sender()
+        btn = self.sender()
         btn.setStyleSheet("border: 5px solid red;")
         self.mixer.clear()
         self.selection = btn
 
     def handleDoubleClick(self, item):
-        deleteFrom = self.MainWindow.sender()
+        deleteFrom = self.sender()
         deleteFrom.takeItem(deleteFrom.row(item))
 
-    def ajouter(self):
-        filenames, filter = QtWidgets.QFileDialog.getOpenFileNames(parent=self.MainWindow, caption='Sélectionner les sons', directory=config["library_dir"], filter='*.wav')
+    def addFile(self):
+        filenames, filter = QtWidgets.QFileDialog.getOpenFileNames(parent=self, caption='Sélectionner les sons', directory=config["library_dir"], filter='*.wav')
         for filename in filenames :
             if filename: 
                 file = os.path.splitext(os.path.basename(filename))[0]
                 self.sounds1.append(os.path.splitext(os.path.basename(filename))[0]) 
                 self.sounds2.append([os.path.splitext(filename)[0].replace(os.path.splitext(os.path.basename(filename))[0], ''), os.path.splitext(os.path.basename(filename))[1]]) 
-                if self.MainWindow.sender() == self.addAmbiant:
+                if self.sender() == self.addAmbiant:
                     addTo = self.listeSonsAmbiants
-                elif self.MainWindow.sender() == self.addPonctuel:
+                elif self.sender() == self.addPonctuel:
                     addTo = self.listeSonsPonctuels
                 item = QtWidgets.QListWidgetItem()
                 item.setText(file)
@@ -309,8 +312,6 @@ if __name__ == "__main__":
 
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    ui.show()
     atexit.register(OnExitApp)
