@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
         self.MainWindow = MainWindow
         self.MainWindow.setGeometry(40, 40, 800, 600)
         self.MainWindow.setWindowTitle("Salle d'immersion sonore")
-        self.MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);color: rgb(0, 0, 0)")
 
         #PARTIE GAUCHE
         #titres
@@ -143,8 +143,8 @@ class Ui_MainWindow(object):
 
         #MENU
         self.menuBar = self.MainWindow.menuBar()
-        self.menuHelp = self.menuBar.addMenu("Help")
-        self.action = QAction(QIcon('help.png'), "Help", self.MainWindow)
+        self.menuHelp = self.menuBar.addMenu("Aide")
+        self.action = QAction(QIcon('help.png'), "Aide", self.MainWindow)
         self.menuHelp.addAction(self.action)
         self.action.triggered.connect(self.help)
 
