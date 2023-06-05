@@ -8,6 +8,7 @@ from soundManager import *
 from server import *
 import sys
 from pydub import AudioSegment
+from config import activities
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -221,27 +222,27 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def envoyer(self):
         if (self.selection == self.fidev.getWidget()) :
-            self.selectionne = 0  
+            self.selectionne = activities.fidev
         elif (self.selection == self.marcheParallele.getWidget()) :
-            self.selectionne = 1
+            self.selectionne = activities.marche_parallele
         elif (self.selection == self.carrefour.getWidget()) :
-            self.selectionne = 2
+            self.selectionne = activities.carrefour
         elif (self.selection == self.test) :
-            self.selectionne = 3
+            self.selectionne = activities.test
 
-        if self.selectionne != 3 :
+        if self.selectionne != activities.test:
             #envoi à la tablette
             message = "<communication_tablette>"
             
-            if self.selectionne == 0 :
+            if self.selectionne == activities.fidev:
                 message = message + "<groupe numbers=\"0\" />"
                 message = message + "<individuels numbers=\"12345678\" />"
 
-            elif self.selectionne == 1 :
+            elif self.selectionne == activities.marche_parallele:
                 message = message + "<groupe numbers=\"1\" />"
                 message = message + "<individuels numbers=\"26\" />"
 
-            elif self.selectionne == 2 :
+            elif self.selectionne == activities.carrefour:
                 message = message + "<groupe numbers=\"2\" />"
                 message = message + "<individuels numbers=\"\" />"
 

@@ -6,7 +6,7 @@ from trajectoire import *
 from math import sqrt
 import time
 import os
-from config import config
+from config import config, activities
 
 class SoundManager():
 
@@ -38,17 +38,56 @@ class SoundManager():
         self.volumeTotal = [0, 0, 0, 0, 0, 0, 0, 0]
         self.nombreSourcesActives = 0
 
+        self.create_geometric_configurations()
+
+    # chaque activité a ses propres configurations géométriques
+    def create_geometric_configurations(self):
+        
+        self.position = {}
+        
+        self.position[activities.fidev] = [
+            [2, 3],
+            [2+sqrt(2)/2, 2+sqrt(2)/2],
+            [3, 2],
+            [2+sqrt(2)/2, 2-sqrt(2)/2],
+            [2, 1],
+            [2-sqrt(2)/2, 2-sqrt(2)/2],
+            [1, 2],
+            [2-sqrt(2)/2, 2+sqrt(2)/2]]
+
+        self.position[activities.marche_parallele] = [
+            [7, 0],
+            [1, 1],
+            [13, 0],
+            [15, 0],
+            [11, 0],
+            [3, 3],
+            [9, 0],
+            [5, 0]]
+
+        self.position[activities.carrefour] =[
+            [4, 4],
+            [6, 6],
+            [4, 2],
+            [6, 0],
+            [2, 2],
+            [0, 0],
+            [2, 4],
+            [0, 6]]
+
     def clear(self):
         self.mm.clear()
 
-
+    # on démarre l'activité avec les sons d'ambiance (sounds1) et les sons ponctuels (sounds2)
     def start(self, sounds1, sounds2):
         self.sounds1 = sounds1
         self.sounds2 = sounds2
+        # on utilise un thread séparé pour lancer l'activité
         thread_server = threading.Thread(target = self.boucle)
         thread_server.daemon = True
         thread_server.start()
 
+    # boucle principale d'activité
     def boucle(self):
         while True :
             if self.message != "" : #si on a reçu une instruction, on la gère
@@ -61,33 +100,6 @@ class SoundManager():
 
     def creaEnceinte(self, selection):
         self.selection = selection
-        self.position = [[
-        [2, 3],
-        [2+sqrt(2)/2, 2+sqrt(2)/2],
-        [3, 2],
-        [2+sqrt(2)/2, 2-sqrt(2)/2],
-        [2, 1],
-        [2-sqrt(2)/2, 2-sqrt(2)/2],
-        [1, 2],
-        [2-sqrt(2)/2, 2+sqrt(2)/2]],
-
-        [[7, 0],
-        [1, 1],
-        [13, 0],
-        [15, 0],
-        [11, 0],
-        [3, 3],
-        [9, 0],
-        [5, 0]], 
-
-        [[4, 4],
-        [6, 6],
-        [4, 2],
-        [6, 0],
-        [2, 2],
-        [0, 0],
-        [2, 4],
-        [0, 6]]]
 
         self.enceinte1 = Enceinte(1, self.position[self.selection][0][0], self.position[self.selection][0][1])
         self.enceinte2 = Enceinte(2, self.position[self.selection][1][0], self.position[self.selection][1][1])
@@ -106,11 +118,11 @@ class SoundManager():
 
     def creaTrajectoire(self, selection):
         self.selection = selection
-        if self.selection == 1 :
+        if self.selection == activities.marche_parallele:
             trajectoire1 = Trajectoire(1, [self.enceinte8, self.enceinte1, self.enceinte7, self.enceinte5, self.enceinte3, self.enceinte4])
             trajectoire2 = Trajectoire(2, [self.enceinte4, self.enceinte3, self.enceinte5, self.enceinte7, self.enceinte1, self.enceinte8])
             self.trajectoires = [trajectoire1, trajectoire2]
-        if self.selection == 2 :
+        if self.selection == activities.carrefour:
             trajectoire1 = Trajectoire(1, [self.enceinte8, self.enceinte7, self.enceinte5, self.enceinte6])
             trajectoire2 = Trajectoire(2, [self.enceinte8, self.enceinte7, self.enceinte3, self.enceinte4])
             trajectoire3 = Trajectoire(3, [self.enceinte8, self.enceinte7, self.enceinte1, self.enceinte2])
@@ -128,7 +140,9 @@ class SoundManager():
 
     def creaSource(self, selection):
         self.selection = selection
-        if self.selection == 0 :
+        # on initialise les sources
+        self.source1 = self.source2 = self.source3 = self.source4 = self.source5 = self.source6 = self.source7 = self.source8 = self.sourceTraj1 = self.sourceTraj2 = self.sourceAmbiance = None
+        if self.selection == activities.fidev:
             self.source1 = Source(self.mm, [self.enceinte1], 0, 0)
             self.source2 = Source(self.mm, [self.enceinte2], 0, 0)
             self.source3 = Source(self.mm, [self.enceinte3], 0, 0)
@@ -137,9 +151,10 @@ class SoundManager():
             self.source6 = Source(self.mm, [self.enceinte6], 0, 0)
             self.source7 = Source(self.mm, [self.enceinte7], 0, 0)
             self.source8 = Source(self.mm, [self.enceinte8], 0, 0)
-        elif self.selection == 1 :
+        elif self.selection == activities.marche_parallele:
             self.source2 = Source(self.mm, [self.enceinte2], 0, 0)
             self.source6 = Source(self.mm, [self.enceinte6], 0, 0)
+
         self.sourceAmbiance = Source(self.mm, Trajectoire(0, [self.enceinte9, self.enceinte10, self.enceinte11, self.enceinte12]), 0, 0)
         self.sources = [self.source1, self.source2, self.source3, self.source4, self.source5, self.source6, self.source7, self.source8]
 

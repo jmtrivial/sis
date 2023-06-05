@@ -1,5 +1,12 @@
 import os
 
+
+class activities:
+    fidev = 0
+    marche_parallele = 1
+    carrefour = 2
+    test = 3
+
 config = {
         "server_port": 14000,
         "library_dir": "bibliotheque",
