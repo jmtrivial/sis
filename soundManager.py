@@ -168,10 +168,11 @@ class SoundManager():
     def setVolume(self):
         if self.type == "solo":
             self.source.setVolume(self.volume)
+            # TODO NUAGES: on doit changer ici si on veut passer les nuages en 0 et 1
             self.mm.setAmp(self.enceinte, self.enceinte, self.volume)
         elif self.type == "ambiant":
             self.source.setVolume(self.volume)
-            # TODO: les sons d'ambiance sont joués sur les enceintes de 9 à 12. On veut les passer en 0 à 3 (voire 0 à 1 puisque c'est du stéréo)
+            # TODO NUAGES: les sons d'ambiance sont joués sur les enceintes de 9 à 12. On veut les passer en 0 à 3 (voire 0 à 1 puisque c'est du stéréo)
             for i in range(9,13) :
                 self.mm.setAmp(self.enceinte, i, self.volume)
         else :
@@ -189,9 +190,12 @@ class SoundManager():
                     self.mm.delInput(self.enceinte)
                     self.mm.addInput(self.enceinte, self.source.getPlayer())
                     if self.type == "solo" :
+                        # une source solo ne joue que dans une enceinte
+                        # TODO NUAGES: on doit changer ici si on veut passer les nuages en 0 et 1
                         self.mm.setAmp(self.enceinte, self.enceinte, self.source.getVolume())
                     elif self.type == "ambiant":
-                        for i in range(9,13) :
+                        # une source ambiant joue dans toutes les enceintes
+                        for i in range(9,13) : #TODO NUAGES: on doit aussi changer ici si on veut passer les nuages en 0 et 1
                             self.mm.setAmp(self.enceinte, i, self.source.getVolume())
                 else :
                     self.source.setPath(self.son)
@@ -201,6 +205,7 @@ class SoundManager():
         
     def setTrajectoire(self, numero, delay):
         self.sourcesMobiles.append(Source(self.mm, self.trajectoires[numero - 1], time.time() + (delay/100), -self.distanceEnceintesFictives, 1+(random.randint(-50, 50))/100))
+        # TODO SON UNIQUE: le son est fixé ici
         self.sourcesMobiles[-1].setPlayer(self.folder_path + "/data/30km_h.wav")
         self.mm.addInput(self.sourcesMobiles[-1], self.sourcesMobiles[-1].getPlayer())
         self.sourcesActives[numero-1] += 1
@@ -223,14 +228,18 @@ class SoundManager():
     #    - "solo": enceinte spatialisée
     #    - "ambiant": enceinte d'ambiance
     #    - "groupe": pour les trajectoires (avec P3 "trajectoire", "automatique")
-    # - P2: 0 (pour diffuser sur les nuages = ambiance), 1 à 8 (pour les enceintes spatialisées). Paramètre aussi utilisé en 0 ou 1 pour piloter l'automatique (voir plus bas)
+    # - P2: 0 (pour diffuser sur les nuages = ambiance), 1 à 8 (pour les enceintes spatialisées). 
+    #       Attention: paramètre aussi utilisé en 0 ou 1 pour piloter l'automatique (voir plus bas).
+    #       Remarque: il serait plus intuitif de considérer ce paramètre comme celui correspondant aux sources (ponctuelles).
     # - P3: 
-    #    - "volume": régle le volume d'une enceinte. P4 de 0 à 100
+    #    - "volume": régle le volume d'une enceinte (solo, ambiant), ou le volume global (groupe). P4 de 0 à 100
     #    - "state": éteint ou allume un son. P4 = on ou off
     #    - "son": choisi un fichier son. P4 = nom du fichier à jouer (TODO: incertitude sur le format exact), ou un entier (entre 1 et 8) pour le test, ou "clear"
     #    - "trajectoire": lance un véhicule suivant une trajectoire pré-établie. P4: numéro de la trajectoire
     #    - "automatique": lance (si P2=1) ou arrête (si P2=0) une trajectoire automatique (ie qui sera rejouée en boucle). P4: numéro de la trajectoire.
     #    - "stop": réduit le volume à zéro (fonctionnement pas intuitif, car l'interface suggère un stop, mais c'est un mute...).
+    #
+    # Remarque: on peut regarder la fonction testerEnceintes() qui utilise 3 messages pour diffuser chacun des sons "1", "2", "3"...
     def gestionMessage(self):
         try :
             root = ET.fromstring(self.message)
