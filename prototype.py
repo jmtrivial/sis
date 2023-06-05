@@ -284,6 +284,10 @@ class Ui_MainWindow(object):
         self.conversion_wav(config["library_dir"])
 
     def conversion_wav(self, path):
+        # si le répertoire n'existe pas, on le créée
+        if not os.path.exists(path):
+            os.mkdir(path)
+
         files = os.listdir(path)
         for name in files:
             np = path + "\\" + name
