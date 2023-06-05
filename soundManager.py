@@ -17,10 +17,11 @@ class SoundManager():
         self.source1 = self.source2 = self.source3 = self.source4 = self.source5 = self.source6 = self.source7 = self.source8 = self.sourceTraj1 = self.sourceTraj2 = self.sourceAmbiance = None
         self.sourcesMobiles = self.trajectoires = self.automatiques = []
         self.a = 6 / (20*log10(2))
-        self.distanceEnceintesFictives = 5
-        self.volumeGlobal = 0.15
+        self.distanceEnceintesFictives = config["virtual_speaker_distance"]
+        self.volumeGlobal = config["global_volume"]
         self.sourcesActives = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         
+        # démarrage du serveur de son pyo
         self.s = Server(nchnls=12)
         self.s.setInputDevice(config["input_device"])
         self.s.setOutputDevice(config["output_device"]) 
@@ -28,12 +29,11 @@ class SoundManager():
         self.s.deactivateMidi()
         self.s.start()
 
+        # démarrage du mixer pyo
         self.mm = Mixer(outs=12, chnls=1, time=.025)
+        self.mm.out()
 
         self.folder_path = config["folder_path"]
-
-        
-        self.mm.out()
 
         self.volumeTotal = [0, 0, 0, 0, 0, 0, 0, 0]
         self.nombreSourcesActives = 0
