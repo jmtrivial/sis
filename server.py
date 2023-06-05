@@ -53,5 +53,5 @@ class Server():
         print(data)
         try :
             self.client.send(data)
-        except :
-            QMessageBox.about(self.qwidget, "Erreur", "L'application tablette n'est pas connectée. Veuillez lancer l'application tablette avant de valider la séléction.")
+        except:
+            QMessageBox.about(self.qwidget, "Erreur", "L'application tablette n'est pas connectée. Veuillez lancer l'application tablette avant de valider la sélection.")
