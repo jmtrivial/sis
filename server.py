@@ -2,6 +2,7 @@ import re
 import socket, threading
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from config import config
 import time
 
 class Server():
@@ -13,7 +14,7 @@ class Server():
         self.serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # connect
-        HOST = "192.168.0.10" # get local machine name
+        HOST = config["host"]
         PORT = 14000
         self.client = 0
 

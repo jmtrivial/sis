@@ -6,6 +6,7 @@ from trajectoire import *
 from math import sqrt
 import time
 import os
+from config import config
 
 class SoundGestion():
 
@@ -21,16 +22,16 @@ class SoundGestion():
         self.sourcesActives = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         
         self.s = Server(nchnls=12)
-        self.s.setInputDevice(8) # changer ici pour la bonne version suivant la config de démarrage
-        self.s.setOutputDevice(8) # 
+        self.s.setInputDevice(config["input_device"])
+        self.s.setOutputDevice(config["output_device"]) 
         self.s.boot()
         self.s.deactivateMidi()
         self.s.start()
 
         self.mm = Mixer(outs=12, chnls=1, time=.025)
 
-        #self.folder_path = os.path.realpath(os.path.dirname(__file__))
-        self.folder_path = "\\\\CRDV-DS418\\Biblio_sonore\\SIS\\" 
+        self.folder_path = config["folder_path"]
+
         
         self.mm.out()
 
