@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QMessageBox, QMenuBar, QAc
 from PyQt5.QtGui import QIcon
 from dialog import *
 from exercice import *
-from soundGestion import *
+from soundManager import *
 from server import *
 import sys
 from pydub import AudioSegment
@@ -20,10 +20,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def initialize(self):
         #démarrage pyo
-        self.mixer = SoundGestion(self)
+        self.soundManager = SoundManager(self)
 
         # démarrage du serveur
-        self.thread = Server(self.widget, self.mixer, self)
+        self.thread = Server(self.widget, self.soundManager, self)
 
         # initialisation de la bibliothèque
         self.updateBiblio()
@@ -178,7 +178,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             button.setStyleSheet("border: 5px solid white;")
         btn = self.sender()
         btn.setStyleSheet("border: 5px solid red;")
-        self.mixer.clear()
+        self.soundManager.clear()
         self.selection = btn
 
     def handleDoubleClick(self, item):
@@ -255,16 +255,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             self.thread.sending(message.encode())
 
-            self.mixer.creaEnceinte(self.selectionne)
-            self.mixer.creaTrajectoire(self.selectionne)
-            self.mixer.creaSource(self.selectionne)
-            self.mixer.start(self.sounds1, self.sounds2)
+            self.soundManager.creaEnceinte(self.selectionne)
+            self.soundManager.creaTrajectoire(self.selectionne)
+            self.soundManager.creaSource(self.selectionne)
+            self.soundManager.start(self.sounds1, self.sounds2)
         else :
-            self.mixer.creaEnceinte(0)
-            self.mixer.creaTrajectoire(0)
-            self.mixer.creaSource(0)
-            self.mixer.start(self.sounds1, self.sounds2)
-            self.mixer.testerEnceintes()
+            self.soundManager.creaEnceinte(0)
+            self.soundManager.creaTrajectoire(0)
+            self.soundManager.creaSource(0)
+            self.soundManager.start(self.sounds1, self.sounds2)
+            self.soundManager.testerEnceintes()
 
 
     def envoi(self, data):

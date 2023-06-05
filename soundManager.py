@@ -8,7 +8,7 @@ import time
 import os
 from config import config
 
-class SoundGestion():
+class SoundManager():
 
     def __init__(self, main):
         self.main = main
