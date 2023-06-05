@@ -156,6 +156,7 @@ class SoundManager():
             self.mm.setAmp(self.enceinte, self.enceinte, self.volume)
         elif self.type == "ambiant":
             self.source.setVolume(self.volume)
+            # TODO: les sons d'ambiance sont joués sur les enceintes de 9 à 12. On veut les passer en 0 à 3 (voire 0 à 1 puisque c'est du stéréo)
             for i in range(9,13) :
                 self.mm.setAmp(self.enceinte, i, self.volume)
         else :
@@ -199,6 +200,22 @@ class SoundManager():
     def receive(self, data):
         self.message = data
 
+    # Informations reçues depuis la tablette. 
+    # Forme du message:
+    # <communication_appli><type style="P1"/><enceinte numero="P2"/><P3 value="P4" /></communication_appli>
+    # Avec valeurs possibles:
+    # - P1: 
+    #    - "solo": enceinte spatialisée
+    #    - "ambiant": enceinte d'ambiance
+    #    - "groupe": pour les trajectoires (avec P3 "trajectoire", "automatique")
+    # - P2: 0 (pour diffuser sur les nuages = ambiance), 1 à 8 (pour les enceintes spatialisées). Paramètre aussi utilisé en 0 ou 1 pour piloter l'automatique (voir plus bas)
+    # - P3: 
+    #    - "volume": régle le volume d'une enceinte. P4 de 0 à 100
+    #    - "state": éteint ou allume un son. P4 = on ou off
+    #    - "son": choisi un fichier son. P4 = nom du fichier à jouer (TODO: incertitude sur le format exact), ou un entier (entre 1 et 8) pour le test, ou "clear"
+    #    - "trajectoire": lance un véhicule suivant une trajectoire pré-établie. P4: numéro de la trajectoire
+    #    - "automatique": lance (si P2=1) ou arrête (si P2=0) une trajectoire automatique (ie qui sera rejouée en boucle). P4: numéro de la trajectoire.
+    #    - "stop": réduit le volume à zéro (fonctionnement pas intuitif, car l'interface suggère un stop, mais c'est un mute...).
     def gestionMessage(self):
         try :
             root = ET.fromstring(self.message)
