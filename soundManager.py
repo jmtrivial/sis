@@ -101,6 +101,7 @@ class SoundManager():
     def creaEnceinte(self, selection):
         self.selection = selection
 
+        # TODO REFACTORING: utiliser des tableaux pour enceinteX
         self.enceinte1 = Enceinte(1, self.position[self.selection][0][0], self.position[self.selection][0][1])
         self.enceinte2 = Enceinte(2, self.position[self.selection][1][0], self.position[self.selection][1][1])
         self.enceinte3 = Enceinte(3, self.position[self.selection][2][0], self.position[self.selection][2][1])
@@ -140,6 +141,8 @@ class SoundManager():
 
     def creaSource(self, selection):
         self.selection = selection
+        # TODO REFACTORING: utiliser des tableaux pour sourceX
+        
         # on initialise les sources
         self.source1 = self.source2 = self.source3 = self.source4 = self.source5 = self.source6 = self.source7 = self.source8 = self.sourceTraj1 = self.sourceTraj2 = self.sourceAmbiance = None
         if self.selection == activities.fidev:
