@@ -14,8 +14,8 @@ class Server():
         self.serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # connect
-        HOST = config["host"]
-        PORT = 14000
+        HOST = config["server_host"]
+        PORT = config["server_port"]
         self.client = 0
 
         self.serverSock.bind((HOST, PORT))   
