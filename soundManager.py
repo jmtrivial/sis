@@ -171,12 +171,12 @@ class SoundManager():
     def setVolume(self):
         if self.type == "solo":
             self.source.setVolume(self.volume)
-            # TODO NUAGES: on doit changer ici si on veut passer les nuages en 0 et 1
-            self.mm.setAmp(self.enceinte, self.enceinte, self.volume)
+            # sons solo en 2 à 10
+            self.mm.setAmp(self.enceinte, self.enceinte + 1, self.volume)
         elif self.type == "ambiant":
             self.source.setVolume(self.volume)
-            # TODO NUAGES: les sons d'ambiance sont joués sur les enceintes de 9 à 12. On veut les passer en 0 à 3 (voire 0 à 1 puisque c'est du stéréo)
-            for i in range(9,13) :
+            # sons NUAGES en 0 et 1
+            for i in range(0, 2) :
                 self.mm.setAmp(self.enceinte, i, self.volume)
         else :
             self.volumeGlobal = self.volume
@@ -194,11 +194,11 @@ class SoundManager():
                     self.mm.addInput(self.enceinte, self.source.getPlayer())
                     if self.type == "solo" :
                         # une source solo ne joue que dans une enceinte
-                        # TODO NUAGES: on doit changer ici si on veut passer les nuages en 0 et 1
-                        self.mm.setAmp(self.enceinte, self.enceinte, self.source.getVolume())
+                        # sons solo en 2 à 10
+                        self.mm.setAmp(self.enceinte, self.enceinte + 1, self.source.getVolume())
                     elif self.type == "ambiant":
-                        # une source ambiant joue dans toutes les enceintes
-                        for i in range(9,13) : #TODO NUAGES: on doit aussi changer ici si on veut passer les nuages en 0 et 1
+                        # sons NUAGES en 0 et 1
+                        for i in range(0, 2) : #TODO NUAGES: on doit aussi changer ici si on veut passer les nuages en 0 et 1
                             self.mm.setAmp(self.enceinte, i, self.source.getVolume())
                 else :
                     self.source.setPath(self.son)
@@ -382,8 +382,9 @@ class SoundManager():
         self.volumeTotal = [x+y for x,y in zip(self.volumeTotal, self.volumesSource)]
         self.nombreSourcesActives +=1
         for i in range(len(self.enceintes)):
+            # enceintes omni de 2 à 10
             volume = float(self.volumesSource[i]) * float(self.volumeGlobal)
-            self.mm.setAmp(source, self.enceintes[i].getIndex(), volume)
+            self.mm.setAmp(source, self.enceintes[i].getIndex() + 1, volume)
 
 
     def testerEnceintes(self):
