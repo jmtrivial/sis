@@ -1,6 +1,0 @@
-{
-    "webdav_hostname": "https://salle-sonore.compas.limos.fr",
-    "webdav_login":    "python",
-    "webdav_password": "password",
-    "audio_library": "library"
-}
