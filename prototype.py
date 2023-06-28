@@ -15,13 +15,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(QtWidgets.QMainWindow, self).__init__()
-
+        self.initialized = False
         self.setupUi()
         self.initialize()
 
     def initialize(self):
         #démarrage pyo
         self.soundManager = SoundManager(self)
+
+        if not self.soundManager.working:
+            QMessageBox.critical(None, "Error", "Veuillez allumer la carte son puis l'ampli, et relancer l'application.")
+            return 
+        self.initialized = True
 
         # démarrage du serveur
         self.thread = Server(self.widget, self.soundManager, self)
@@ -314,5 +319,6 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     ui = Ui_MainWindow()
-    ui.show()
-    atexit.register(OnExitApp)
+    if ui.initialized:
+        ui.show()
+        atexit.register(OnExitApp)

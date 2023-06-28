@@ -21,13 +21,29 @@ class SoundManager():
         self.volumeGlobal = config["global_volume"]
         self.sourcesActives = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         
+
+        inputs, outputs = pa_get_devices_infos()
+        if (not config["input_device"] in inputs) or (not config["output_device"] in outputs):
+            self.working = False
+            return 
+
         # démarrage du serveur de son pyo
         self.s = Server(nchnls=12)
         self.s.setInputDevice(config["input_device"])
         self.s.setOutputDevice(config["output_device"]) 
         self.s.boot()
+        if not self.s.getIsBooted():
+            self.working = False
+            return
+
         self.s.deactivateMidi()
         self.s.start()
+
+        if not self.s.getIsStarted(): 
+            self.working = False
+            return
+
+        self.working = True
 
         # démarrage du mixer pyo
         self.mm = Mixer(outs=12, chnls=1, time=.025)
